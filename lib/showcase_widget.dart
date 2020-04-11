@@ -29,8 +29,18 @@ import 'package:flutter/material.dart';
 class ShowCaseWidget extends StatefulWidget {
   final Builder builder;
   final VoidCallback onFinish;
+  final bool autoPlay;
+  final Duration autoPlayDelay;
+  final bool autoPlayLockEnable;
 
-  const ShowCaseWidget({@required this.builder, this.onFinish});
+  const ShowCaseWidget({
+    Key key,
+    @required this.builder,
+    this.autoPlay = false,
+    this.autoPlayDelay = const Duration(milliseconds: 2000),
+    this.autoPlayLockEnable = false,
+    this.onFinish,
+  }): super(key: key);
 
   static activeTargetWidget(BuildContext context) {
     return context
@@ -40,7 +50,7 @@ class ShowCaseWidget extends StatefulWidget {
 
   static ShowCaseWidgetState of(BuildContext context) {
     ShowCaseWidgetState state =
-    context.findAncestorStateOfType<ShowCaseWidgetState>();
+        context.findAncestorStateOfType<ShowCaseWidgetState>();
     if (state != null) {
       return context.findAncestorStateOfType<ShowCaseWidgetState>();
     } else {
@@ -55,6 +65,18 @@ class ShowCaseWidget extends StatefulWidget {
 class ShowCaseWidgetState extends State<ShowCaseWidget> {
   List<GlobalKey> ids;
   int activeWidgetId;
+  bool autoPlay;
+  Duration autoPlayDelay;
+  bool autoPlayLockEnable;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    this.autoPlayDelay = widget.autoPlayDelay;
+    this.autoPlay = widget.autoPlay;
+    this.autoPlayLockEnable = widget.autoPlayLockEnable;
+  }
 
   void startShowCase(List<GlobalKey> widgetIds) {
     setState(() {
