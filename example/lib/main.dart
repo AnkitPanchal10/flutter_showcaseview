@@ -11,7 +11,14 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: ShowCaseWidget(child: MailPage()),
+      home: ShowCaseWidget(
+        builder: Builder(
+          builder: (context) => MailPage(),
+        ),
+        autoPlay: true,
+        autoPlayDelay: Duration(seconds: 3),
+        autoPlayLockEnable: true,
+      ),
     );
   }
 }
@@ -32,8 +39,7 @@ class _MailPageState extends State<MailPage> {
   Widget build(BuildContext context) {
     //Start showcase view after current widget frames are drawn.
     WidgetsBinding.instance.addPostFrameCallback((_) =>
-        ShowCaseWidget.startShowCase(
-            context, [_one, _two, _three, _four, _five]));
+        ShowCaseWidget.of(context).startShowCase([_one, _two, _three, _four, _five],));
 
     return Scaffold(
       body: SafeArea(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'dart:async';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:showcaseview/custom_paint.dart';
 import 'get_position.dart';
@@ -97,7 +98,7 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
   bool _showShowCase = false;
   Animation<double> _slideAnimation;
   AnimationController _slideAnimationController;
-
+  Timer timer;
   GetPosition position;
 
   @override
@@ -147,6 +148,11 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
 
     if (activeStep == widget.key) {
       _slideAnimationController.forward();
+      if (ShowCaseWidget.of(context).autoPlay) {
+        timer =  Timer(Duration(seconds: ShowCaseWidget.of(context).autoPlayDelay.inSeconds), () {
+          _nextIfAny();
+        });
+      }
     }
   }
 
@@ -162,7 +168,11 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
   }
 
   _nextIfAny() {
-    ShowCaseWidget.completed(context, widget.key);
+    if (timer != null && timer.isActive) {
+      if (ShowCaseWidget.of(context).autoPlayLockEnable) { return; }
+      timer.cancel();
+    } else if (timer != null && !timer.isActive) { timer = null;}
+    ShowCaseWidget.of(context).completed(widget.key);
     _slideAnimationController.forward();
   }
 
